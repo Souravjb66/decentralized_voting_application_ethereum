@@ -1,0 +1,13 @@
+// 0xfa4c1fb70bddf67cc1f5029a6272adfe4f0baa85
+
+//0x98298aBF352d714d193697501789c52EA3920cEC
+
+// opts := &bind.CallOpts{}
+
+// cr := "0x39601Da937225a60FaFA1BAF8b4586E993aBbFA1" //from contract owner ac
+// 	cad := common.HexToAddress(cr)
+// 	bal, er := client.BalanceAt(context.TODO(), cad, nil)
+// 	if er != nil {
+// 		fmt.Println("error -=", er)
+// 	}
+// 	fmt.Println("bl :", bal)
