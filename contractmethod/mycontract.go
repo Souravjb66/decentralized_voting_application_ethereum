@@ -5,6 +5,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"math/big"
+	// "reflect"
 	abi "votede/abgen"
 )
 
@@ -15,10 +16,13 @@ type Mycontract struct {
 var Solcontract Mycontract
 
 func TransactionSetMember(address common.Address, name string, age uint16) uint {
-	// opts := &bind.CallOpts{
-	// 	From: alladdress.Allcandidate.First,
-	// }
-	ss, err := Solcontract.Contract.SetMember(&bind.TransactOpts{From: address}, name, age)
+	// fmt.Println(address)
+	// fmt.Println("type of :", reflect.TypeOf(address))
+	opts := &bind.TransactOpts{
+		From: address,
+	}
+	// &bind.TransactOpts{From: address}
+	ss, err := Solcontract.Contract.SetMember(opts, name, age)
 	if err != nil {
 		fmt.Println(err)
 		return 404

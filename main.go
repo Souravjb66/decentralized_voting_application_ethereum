@@ -8,11 +8,13 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gorilla/mux"
+	"net/http"
 	method "votede/contractmethod"
 	"votede/routes"
 )
 
 func main() {
+	fmt.Println("server start")
 	router := mux.NewRouter()
 	var sepolaUrl = "https://eth-sepolia.g.alchemy.com/v2/lh4oR7wrbDIA2c2qBJMo5g5NDk_YtuKB"
 	client, err := ethclient.Dial(sepolaUrl)
@@ -29,11 +31,12 @@ func main() {
 	}
 	method.Solcontract.Contract = contract
 
-	router.HandleFunc("/setmember", routes.ForSetMember).Methods("POST")
+	router.HandleFunc("/setmember", routes.ForSetMember).Methods("GET")
 	router.HandleFunc("/give-vote", routes.ForGiveVote).Methods("POST")
 	router.HandleFunc("/get-candidate", routes.ToGetCandidate).Methods("GET")
 	router.HandleFunc("/get-members", routes.ToGetMembers).Methods("GET")
 	router.HandleFunc("/get-totalvote", routes.ToGetAllVote).Methods("GET")
 	router.HandleFunc("get-votemember", routes.ToGetVotedMemmber).Methods("GET")
+	http.ListenAndServe(":8080", router)
 
 }

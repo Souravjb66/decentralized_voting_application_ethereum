@@ -10,6 +10,7 @@ import (
 )
 
 func ForSetMember(w http.ResponseWriter, r *http.Request) {
+	// fmt.Println("type of :", reflect.TypeOf(address))
 	type Member struct {
 		Name string
 		Age  uint16
@@ -21,6 +22,7 @@ func ForSetMember(w http.ResponseWriter, r *http.Request) {
 	if result == 404 {
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode("not found")
+		return
 	}
 	w.WriteHeader(200)
 	json.NewEncoder(w).Encode("submited")
@@ -37,6 +39,7 @@ func ForGiveVote(w http.ResponseWriter, r *http.Request) {
 	if result == 404 {
 		w.WriteHeader(404)
 		json.NewEncoder(w).Encode("not found")
+		return
 	}
 	w.WriteHeader(200)
 	json.NewEncoder(w).Encode("succesfuly voting")
@@ -49,6 +52,7 @@ func ToGetCandidate(w http.ResponseWriter, r *http.Request) {
 	if result == 404 {
 		w.WriteHeader(404)
 		json.NewEncoder(w).Encode("not found")
+		return
 	}
 	w.WriteHeader(200)
 	json.NewEncoder(w).Encode(result)
@@ -61,6 +65,7 @@ func ToGetMembers(w http.ResponseWriter, r *http.Request) {
 	if result == nil {
 		w.WriteHeader(404)
 		json.NewEncoder(w).Encode("not found")
+		return
 	}
 	w.WriteHeader(200)
 	json.NewEncoder(w).Encode(result)
@@ -79,6 +84,7 @@ func ToGetAllVote(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(404)
 		json.NewEncoder(w).Encode("not found")
+		return
 	}
 
 	w.WriteHeader(200)
@@ -93,6 +99,7 @@ func ToGetVotedMemmber(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		w.WriteHeader(404)
 		json.NewEncoder(w).Encode("not found")
+		return
 	}
 	w.WriteHeader(200)
 	json.NewEncoder(w).Encode(result)
