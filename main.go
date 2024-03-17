@@ -2,15 +2,17 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	abi "votede/abgen"
+
+	"net/http"
+	method "votede/contractmethod"
+	"votede/routes"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gorilla/mux"
-	"net/http"
-	method "votede/contractmethod"
-	"votede/routes"
 )
 
 func main() {
@@ -31,12 +33,12 @@ func main() {
 	}
 	method.Solcontract.Contract = contract
 
-	router.HandleFunc("/setmember", routes.ForSetMember).Methods("GET")
+	router.HandleFunc("/setmember", routes.ForSetMember).Methods("POST")
 	router.HandleFunc("/give-vote", routes.ForGiveVote).Methods("POST")
 	router.HandleFunc("/get-candidate", routes.ToGetCandidate).Methods("GET")
 	router.HandleFunc("/get-members", routes.ToGetMembers).Methods("GET")
 	router.HandleFunc("/get-totalvote", routes.ToGetAllVote).Methods("GET")
 	router.HandleFunc("get-votemember", routes.ToGetVotedMemmber).Methods("GET")
-	http.ListenAndServe(":8080", router)
+	log.Fatal(http.ListenAndServe(":8081", router))
 
 }

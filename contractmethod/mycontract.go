@@ -2,9 +2,12 @@ package contractmethod
 
 import (
 	"fmt"
+	"math/big"
+	"strings"
+
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
-	"math/big"
+
 	// "reflect"
 	abi "votede/abgen"
 )
@@ -16,10 +19,14 @@ type Mycontract struct {
 var Solcontract Mycontract
 
 func TransactionSetMember(address common.Address, name string, age uint16) uint {
+	pvk := "79e0e280d7a984023e686ca6e40a08aeaa3010baa2406984bd64692405d1204b"
+	password := "code@hyper256###"
+	auth, _ := bind.NewTransactor(strings.NewReader(pvk), password)
+
 	// fmt.Println(address)
 	// fmt.Println("type of :", reflect.TypeOf(address))
 	opts := &bind.TransactOpts{
-		From: address,
+		From: auth.From,
 	}
 	// &bind.TransactOpts{From: address}
 	ss, err := Solcontract.Contract.SetMember(opts, name, age)
