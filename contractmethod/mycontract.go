@@ -1,12 +1,16 @@
 package contractmethod
 
 import (
+	"context"
+	"crypto/ecdsa"
 	"fmt"
+
 	"math/big"
-	"strings"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/ethclient"
 
 	// "reflect"
 	abi "votede/abgen"
@@ -14,22 +18,30 @@ import (
 
 type Mycontract struct {
 	Contract *abi.Vote
+	Client   *ethclient.Client
+	Auth     *bind.TransactOpts
 }
 
 var Solcontract Mycontract
 
-func TransactionSetMember(address common.Address, name string, age uint16) uint {
-	pvk := "79e0e280d7a984023e686ca6e40a08aeaa3010baa2406984bd64692405d1204b"
-	password := "code@hyper256###"
-	auth, _ := bind.NewTransactor(strings.NewReader(pvk), password)
+func TransactionSetMember(pvk *ecdsa.PrivateKey, name string, age uint16) uint {
+	add := crypto.PubkeyToAddress(pvk.PublicKey)
 
-	// fmt.Println(address)
-	// fmt.Println("type of :", reflect.TypeOf(address))
-	opts := &bind.TransactOpts{
-		From: auth.From,
+	Solcontract.Auth.GasLimit = 300000
+	a, aerr := Solcontract.Client.SuggestGasPrice(context.TODO())
+	if aerr != nil {
+		fmt.Println(aerr)
+		return 404
 	}
-	// &bind.TransactOpts{From: address}
-	ss, err := Solcontract.Contract.SetMember(opts, name, age)
+	b, berror := Solcontract.Client.PendingNonceAt(context.TODO(), add)
+	if berror != nil {
+		fmt.Println(berror)
+		return 404
+	}
+	Solcontract.Auth.GasPrice = a
+	Solcontract.Auth.Nonce = big.NewInt(int64(b))
+
+	ss, err := Solcontract.Contract.SetMember(Solcontract.Auth, name, age)
 	if err != nil {
 		fmt.Println(err)
 		return 404
@@ -38,8 +50,14 @@ func TransactionSetMember(address common.Address, name string, age uint16) uint 
 	return 200
 
 }
-func TransactionGiveVote(from common.Address, vote common.Address) uint {
-	vo, err := Solcontract.Contract.GiveVote(&bind.TransactOpts{From: from}, vote) //transactopts is use if function modify something in blockchain
+func TransactionGiveVote(from *ecdsa.PrivateKey, vote common.Address) uint {
+	a, _ := Solcontract.Client.SuggestGasPrice(context.TODO())
+	b, _ := Solcontract.Client.PendingNonceAt(context.TODO(), crypto.PubkeyToAddress(from.PublicKey))
+	Solcontract.Auth.GasLimit = 300000
+	Solcontract.Auth.GasPrice = a
+	Solcontract.Auth.Nonce = big.NewInt(int64(b))
+
+	vo, err := Solcontract.Contract.GiveVote(Solcontract.Auth, vote) //transactopts is use if function modify something in blockchain
 	if err != nil {
 		fmt.Println(err)
 		return 404

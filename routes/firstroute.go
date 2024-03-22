@@ -1,12 +1,14 @@
 package routes
 
 import (
+	"crypto/ecdsa"
 	"encoding/json"
-	"github.com/ethereum/go-ethereum/common"
 	"log"
 	"math/big"
 	"net/http"
 	method "votede/contractmethod"
+
+	"github.com/ethereum/go-ethereum/common"
 )
 
 func ForSetMember(w http.ResponseWriter, r *http.Request) {
@@ -14,7 +16,7 @@ func ForSetMember(w http.ResponseWriter, r *http.Request) {
 	type Member struct {
 		Name string
 		Age  uint16
-		User common.Address
+		User *ecdsa.PrivateKey
 	}
 	var member Member
 	json.NewDecoder(r.Body).Decode(&member)
@@ -30,7 +32,7 @@ func ForSetMember(w http.ResponseWriter, r *http.Request) {
 }
 func ForGiveVote(w http.ResponseWriter, r *http.Request) {
 	type Voter struct {
-		From      common.Address
+		From      *ecdsa.PrivateKey
 		Candidate common.Address
 	}
 	var myvote Voter
