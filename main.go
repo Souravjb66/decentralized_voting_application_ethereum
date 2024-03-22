@@ -44,7 +44,6 @@ func main() {
 		fmt.Println(err)
 	}
 	defer client.Close()
-	// claddr := "0x39601Da937225a60FaFA1BAF8b4586E993aBbFA1"
 
 	// decFile,_:= keystore.DecryptKey(dest, "password")         //decrypt the encrypt file using assign password
 
